@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1035825578092",
+    "project_id": "pruebalucas-98609",
+    "storage_bucket": "pruebalucas-98609.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035825578092:android:5386a50d4651415725d849",
+        "android_client_info": {
+          "package_name": "com.example.spike_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035825578092-uq6ijlhsl10khr6svtfbcldch022tt98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCemKMXuunXkSDtZZQHeqvR4KF2OPtA7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035825578092-uq6ijlhsl10khr6svtfbcldch022tt98.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
