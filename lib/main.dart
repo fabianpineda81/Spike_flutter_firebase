@@ -1,11 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:spike_firebase/camara.dart';
+import 'package:spike_firebase/models/dbProvider.dart';
+import 'package:spike_firebase/sql_lite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
+  DBProvider.db;
+
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +32,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home:Imagen(),
+      home:const SqlLite() ,
     );
   }
 }

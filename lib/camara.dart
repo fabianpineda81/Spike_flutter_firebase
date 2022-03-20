@@ -58,7 +58,7 @@ class _imagenState extends State<Imagen>
     }
     setState(() {
       if(pikedFile!=null){
-        imagen= File(pikedFile.path);
+        imagen= File(pikedFile.path); 
         uploadExample(pikedFile.path);
       }else{
 
@@ -82,12 +82,12 @@ opciones(contex){
                 },
                 child: Container(
                   padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     border: Border(bottom: BorderSide(width: 1,color: Colors.grey)),
 
                   ),
                   child: Row(
-                    children: [
+                    children: const [
                       Expanded(child: Text("Tomar una foto",style: TextStyle(
                         fontSize: 16,
 
@@ -106,13 +106,13 @@ opciones(contex){
                   selImagen(2);
                 },
                 child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
 
 
                   ),
                   child: Row(
-                    children: [
+                    children: const [
                       Expanded(child: Text("debe seleccionar una foto",style: TextStyle(
                         fontSize: 16,
 
@@ -131,14 +131,14 @@ opciones(contex){
                   Navigator.of(context).pop();
                 },
                 child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
                   color: Colors.red
 
                   ),
                   child: Row(
-                    children: [
-                      Expanded(child: Text("cancelar",
+                    children: const [
+                      Expanded(child: Text("canceler",
                         style: TextStyle(
                         fontSize: 16,
                         color: Colors.white
@@ -180,10 +180,10 @@ opciones(contex){
               ElevatedButton(onPressed: (){
                     opciones(context);
               },
-                  child: Text("selecciona una imagen")
+                  child: const Text("selecciona una imagen")
               )
-              , SizedBox(height: 30,),
-              imagen==null ?  Center():Image.file(imagen!)
+              , const SizedBox(height: 30,),
+              imagen==null ?  const Center():Image.file(imagen!)
 
             ],
           )
