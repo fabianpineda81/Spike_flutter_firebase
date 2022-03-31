@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spike_firebase/herpers/helper_toas.dart';
+import 'package:spike_firebase/models/MTraslations.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'MImage.dart';
@@ -27,12 +29,14 @@ class DBProvider {
     String path = join(documentsDirectory.path, "spike.db");
     return await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
+        HelperToast.showToast("creando tablas");
         db.rawQuery(MImage.createTableScript);
         db.rawQuery(MFolder.createTableScript);
         db.rawQuery(MRelation.createTableScript);
+        db.rawQuery(Translation.createTableScript);
 
       },
 

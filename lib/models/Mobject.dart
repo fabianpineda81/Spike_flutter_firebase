@@ -1,7 +1,7 @@
 import 'MImage.dart';
 
 class MObject {
-  int? id = -1;
+  int id = -1;
   int isVisible = 0; // if visible can be shown in learning grid
   int? isUnderstood;
   int? isAvailable;

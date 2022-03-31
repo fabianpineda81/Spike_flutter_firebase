@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart'  as firebase_core;
 import 'package:path_provider/path_provider.dart';
 
 
+
 class Imagen extends StatefulWidget{
   @override
   State<StatefulWidget> createState()=> _imagenState();
@@ -28,6 +29,7 @@ class _imagenState extends State<Imagen>
   Future<void> uploadExample(String url) async {
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
+
     String filePath = '$url';
     // ...
     await uploadFile(filePath);
@@ -35,6 +37,7 @@ class _imagenState extends State<Imagen>
 
   Future<void> uploadFile(String filePath) async {
     File file = File(filePath);
+
 
     try {
       await firebase_storage.FirebaseStorage.instance
@@ -69,7 +72,7 @@ class _imagenState extends State<Imagen>
   }
 
 
-opciones(contex){
+opciones(context){
   showDialog(context: context, builder:(BuildContext buildContext){
     return AlertDialog(
       contentPadding: EdgeInsets.all(0),

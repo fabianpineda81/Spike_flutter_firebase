@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
+import 'MTraslations.dart';
 import 'Mobject.dart';
 import 'dbProvider.dart';
 
@@ -20,7 +23,9 @@ class MImage extends MObject{
       "isAvailable INTEGER,"
       "backgroundColor TEXT,"
       "minLevelToShow INTEGER,"
-      "user TEXT"
+      "user TEXT,"
+      "textToShow TEXT,"
+      "textToSay TEXT"
       ")";// base 64 of image to show to user
 
   static List<MImage>? inMemoryTable;
@@ -70,44 +75,66 @@ class MImage extends MObject{
     }
 
     if (this.fileName == null) {
-      this.fileName = 'assets/images/ui_empty.png';
+      this.fileName = 'assets/Images/ui_empty.png';
     }
 
     if (this.fileName.isEmpty) {
-      this.fileName = 'assets/images/ui_empty.png';
+      this.fileName = 'assets/Images/ui_empty.png';
     }
 
     this.isVisible = isVisible;
     this.isUnderstood = isUnderstood;
-    this.backgroundColor = backgroundColor ?? '';
-    this.minColumn = minColumn ?? 1;
-    this.maxColumn = maxColumn ?? 1;
-    this.minLevelToShow = minLevelToShow ?? 1;
-    this.useAsset = useAsset ?? 1;
-    this.localFileName = localFileName ?? '';
+    this.backgroundColor = backgroundColor;
+    this.minColumn = minColumn;
+    this.maxColumn = maxColumn;
+    this.minLevelToShow = minLevelToShow;
+    this.useAsset = useAsset ;
+    this.localFileName = localFileName;
 
-    this.userCreated = userCreated ?? 1;
+    this.userCreated = userCreated;
     this.isAvailable = isAvailable;
-    this.user = user ?? '';
+    this.user = user;
   }
   factory MImage.fromMap(Map<String, dynamic> json) => MImage(
     id: json["id"],
     fileName: json["fileName"],
-    categoryId: json["categoryId"],
-    textToShow: json["textToShow"],
-    textToSay: json["textToSay"],
-    relationId: json["relationId"],
+    categoryId: json["categoryId"]??-1,
+    textToShow: json["textToShow"]??'',
+    textToSay: json["textToSay"]??'',
+    relationId: json["relationId"]??-1,
     isVisible: json["isVisible"],
     isUnderstood: json["isUnderstood"],
     backgroundColor: json["backgroundColor"],
-    minColumn: json["minColumn"],
-    maxColumn: json["maxColumn"],
-    minLevelToShow: json["minLevelToShow"],
-    useAsset: json["useAsset"],
+    minColumn: json["minColumn"]??1,
+    maxColumn: json["maxColumn"]??1,
+    minLevelToShow: json["minLevelToShow"]??1,
+    useAsset: json["useAsset"]??1,
     localFileName: json["localFileName"],
-    userCreated: json["userCreated"],
-    isAvailable: json["isAvailable"],
-    user: json["user"],
+    userCreated: json["userCreated"]??1,
+    isAvailable: json["isAvailable"]??1,
+    user: json["user"]??''
+        '',
+  );
+  // TODO hay que crear este metodo en lucas
+  factory MImage.jsonToImage(Map<String, dynamic> json) => MImage(
+    id: json["idInDevice"],
+    fileName: json["fileName"],
+    categoryId: json["categoryId"]??-1,
+    textToShow: json["textToShow"]??'',
+    textToSay: json["textToSay"]??'',
+    relationId: json["relationId"]??-1,
+    isVisible: json["isVisible"],
+    isUnderstood: json["isUnderstood"],
+    backgroundColor: json["backgroundColor"],
+    minColumn: json["minColumn"]??1,
+    maxColumn: json["maxColumn"]??1,
+    minLevelToShow: json["minLevelToShow"]??1,
+    useAsset: json["useAsset"]??1,
+    localFileName: json["localFileName"],
+    userCreated: json["userCreated"]??1,
+    isAvailable: json["isAvailable"]??1,
+    user: json["user"]??''
+        '',
   );
 
 
@@ -117,8 +144,8 @@ class MImage extends MObject{
     // return res;
 
     await db?.rawInsert(
-        "INSERT Into $TableName (id,fileName,categoryId, isVisible, isUnderstood, useAsset, localFileName, userCreated,isAvailable,user,backgroundColor)"
-            " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT Into $TableName (id,fileName,categoryId, isVisible, isUnderstood, useAsset, localFileName, userCreated,isAvailable,user,backgroundColor,textToShow,textToSay)"
+            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           entity.id,
           entity.fileName,
@@ -131,6 +158,8 @@ class MImage extends MObject{
           entity.isAvailable,
           entity.user,
           entity.backgroundColor,
+          entity.textToShow,
+          entity.textToSay
         ]);
 
 
@@ -144,12 +173,9 @@ class MImage extends MObject{
   }
 
   static Future<int> maxId() async {
-    final db = await DBProvider.db.database;
+    int i = UniqueKey().hashCode;
 
-    var table = await db?.rawQuery("SELECT MAX(id)+1 as id FROM $TableName");
-    Object maxId = await table?.first["id"] ?? 1;
-
-    return int.parse(maxId.toString()) ;
+    return i ;
   }
 
   Map<String, dynamic> toBDMap() => {
@@ -197,6 +223,51 @@ class MImage extends MObject{
     return list;
   }
 
+  static Future<MImage?> getByID(int id) async {
+
+    String languageCode ="en";
+    //await LocalPreferences.getString('languageCode', 'en');
+
+    final db = await DBProvider.db.database;
+    String sql = 'SELECT $TableName.*, '
+        '${Translation.TableName}.textToShow, ${Translation.TableName}.textToSay '
+    //'${MCategory.TableName}.backgroundColor, ${MCategory.TableName}.minColumn, '
+    // '${MCategory.TableName}.minColumn, '
+    // '${MCategory.TableName}.maxColumn '
+    //'${MCategory.TableName}.maxColumn, ${MCategory.TableName}.minLevelToShow '
+        'FROM $TableName '
+        'LEFT JOIN ${Translation.TableName} '
+        'ON ${Translation.TableName}.language="$languageCode" '
+        'AND ${Translation.TableName}.tableName="${MImage.TableName}" '
+        'AND ${Translation.TableName}.itemId=$TableName.id '
+        'WHERE $TableName.id = $id';
+
+    final List<Map<String, Object?>> result = await db!.rawQuery(sql);
+    List<MImage>? list = result.isNotEmpty ? result.toList().map((c) => MImage.fromMap(c)).toList()
+        : <MImage>[];
+
+    try{
+      return list.first;
+    }catch(e){
+      return null;
+    }
+
+
+
+   /* final db = await DBProvider.db.database;
+    final List<Map<String, Object?>> result = await db!.query(TableName,where: "id=?",whereArgs: [id]);
+    List<MImage>? list = result.isNotEmpty ? result.toList().map((c) => MImage.fromMap(c)).toList()
+        : <MImage>[];
+
+    try{
+      return list.first;
+    }catch(e){
+      return null;
+    }*/
+  }
+  Map toJson() {
+    return toBDMap();
+  }
 
 
 
